@@ -3,21 +3,21 @@
 
     <item
         is-multidex="true"
-        jar="/home/miguel/caffe-android-demo/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jar="/home/miguel/taatu/demo/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="b27d87af104bc26f7ef6b7e82a352bf34f82cd86">
-        <dex dex="/home/miguel/caffe-android-demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_9dc66f055adb673fe18cd3f27daab39e69b8e56d/classes.dex" />
+        sha1="af46aab0601b5ffcc9a7fcd0eee2bd988a170021">
+        <dex dex="/home/miguel/taatu/demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_d2d3573b44ac695987e9812761b006de69e8fa3c/classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="/home/miguel/caffe-android-demo/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jar="/home/miguel/taatu/demo/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="aebe5112798d5759ae31ed13f647edf1b7cfcb68">
-        <dex dex="/home/miguel/caffe-android-demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_4adbad9d2915006a32ecc04bc3e3c0c02aaefdd2/classes.dex" />
+        sha1="763ee23b6abce0b8d31ea793be1e5bcef7543348">
+        <dex dex="/home/miguel/taatu/demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_27fbce0aeb30aa69734ead695e1068df49a48c80/classes.dex" />
     </item>
 
 </items>
