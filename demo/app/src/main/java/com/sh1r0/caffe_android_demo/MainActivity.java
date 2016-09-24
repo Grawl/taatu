@@ -49,9 +49,9 @@ public class MainActivity extends Activity implements CNNListener {
     private Bitmap bmp;
     private CaffeMobile caffeMobile;
     File sdcard = Environment.getExternalStorageDirectory();
-    String modelDir = sdcard.getAbsolutePath() + "/caffe_mobile/bvlc_reference_caffenet";
-    String modelProto = modelDir + "/deploy.prototxt";
-    String modelBinary = modelDir + "/bvlc_reference_caffenet.caffemodel";
+    String modelDir = sdcard.getAbsolutePath() + "/caffe_mobile/our_model/";
+    String modelProto = modelDir + "model_norm_abs_100k.prototxt";
+    String modelBinary = modelDir + "model_norm_abs_100k.caffemodel";
 
     static {
         System.loadLibrary("caffe");
@@ -90,8 +90,8 @@ public class MainActivity extends Activity implements CNNListener {
         caffeMobile = new CaffeMobile();
         caffeMobile.setNumThreads(4);
         caffeMobile.loadModel(modelProto, modelBinary);
-        float[] meanValues = {104, 117, 123};
-        caffeMobile.setMean(meanValues);
+        //float[] meanValues = {104, 117, 123};
+        //caffeMobile.setMean(meanValues);
 
         AssetManager am = this.getAssets();
         try {
@@ -148,7 +148,7 @@ public class MainActivity extends Activity implements CNNListener {
         tvLabel.setText("");
     }
 
-    private class CNNTask extends AsyncTask<String, Void, Integer> {
+    private class CNNTask extends AsyncTask<String, Void, int[]> {
         private CNNListener listener;
         private long startTime;
 
@@ -157,23 +157,26 @@ public class MainActivity extends Activity implements CNNListener {
         }
 
         @Override
-        protected Integer doInBackground(String... strings) {
+        protected int[] doInBackground(String... strings) {
             startTime = SystemClock.uptimeMillis();
-            return caffeMobile.predictImage(strings[0])[0];
+            return caffeMobile.predictImage(strings[0], 74*54);
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
+        protected void onPostExecute(int[] result) {
             Log.i(LOG_TAG, String.format("elapsed wall time: %d ms", SystemClock.uptimeMillis() - startTime));
-            listener.onTaskCompleted(integer);
-            super.onPostExecute(integer);
+            listener.onTaskCompleted(result);
+            super.onPostExecute(result);
         }
     }
 
     @Override
-    public void onTaskCompleted(int result) {
-        ivCaptured.setImageBitmap(bmp);
-        tvLabel.setText(IMAGENET_CLASSES[result]);
+    public void onTaskCompleted(int[] result) {
+        //ivCaptured.setImageBitmap(bmp);
+        Bitmap bitmap = Bitmap.createBitmap(result, 74, 54, Bitmap.Config.ARGB_8888);
+        ivCaptured.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        ivCaptured.setImageBitmap(bitmap);
+        //tvLabel.setText(IMAGENET_CLASSES[result]);
         btnCamera.setEnabled(true);
         btnSelect.setEnabled(true);
 
