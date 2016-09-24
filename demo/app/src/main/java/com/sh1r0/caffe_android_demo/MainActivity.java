@@ -90,7 +90,6 @@ public class MainActivity extends Activity implements CNNListener {
         caffeMobile = new CaffeMobile();
         caffeMobile.setNumThreads(4);
         caffeMobile.loadModel(modelProto, modelBinary);
-
         float[] meanValues = {104, 117, 123};
         caffeMobile.setMean(meanValues);
 

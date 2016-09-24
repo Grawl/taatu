@@ -20,6 +20,8 @@ public class CaffeMobile {
 
     public native int[] predictImage(String imgPath, int k);
 
+    public native int[] predictImage(byte[] buf, int width, int height, int k);
+
     public native float[][] extractFeatures(String imgPath, String blobNames);
 
     public void setMean(float[] meanValues) {
