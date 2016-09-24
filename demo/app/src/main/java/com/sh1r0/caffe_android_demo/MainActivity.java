@@ -26,6 +26,7 @@ import com.sh1r0.caffe_android_lib.CaffeMobile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -159,7 +160,15 @@ public class MainActivity extends Activity implements CNNListener {
         @Override
         protected int[] doInBackground(String... strings) {
             startTime = SystemClock.uptimeMillis();
-            return caffeMobile.predictImage(strings[0], 74*54);
+            Bitmap bitmap = BitmapFactory.decodeFile(strings[0]);
+            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 298, 218, false);
+            int bytes = scaled.getByteCount();
+
+            ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
+            scaled.copyPixelsToBuffer(buffer); //Move the byte data to the buffer
+
+            byte[] array = buffer.array(); //Get the underlying array containing the data.
+            return caffeMobile.predictImage(array, 74, 54, 74*54);
         }
 
         @Override
