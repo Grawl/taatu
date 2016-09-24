@@ -4,9 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
-/**
- * Created by ag3r on 9/24/2016.
- */
 public class Transformer {
 
     static int transformPixels(int[] pixels) {
