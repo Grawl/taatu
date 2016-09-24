@@ -2,6 +2,7 @@ package com.sh1r0.caffe_android_demo;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -28,10 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
 
 
 public class MainActivity extends Activity implements CNNListener {
@@ -91,22 +89,9 @@ public class MainActivity extends Activity implements CNNListener {
         caffeMobile = new CaffeMobile();
         caffeMobile.setNumThreads(4);
         caffeMobile.loadModel(modelProto, modelBinary);
-        //float[] meanValues = {104, 117, 123};
-        //caffeMobile.setMean(meanValues);
+        float[] meanValues = {127, 127, 127};
+        caffeMobile.setMean(meanValues);
 
-        AssetManager am = this.getAssets();
-        try {
-            InputStream is = am.open("synset_words.txt");
-            Scanner sc = new Scanner(is);
-            List<String> lines = new ArrayList<String>();
-            while (sc.hasNextLine()) {
-                final String temp = sc.nextLine();
-                lines.add(temp.substring(temp.indexOf(" ") + 1));
-            }
-            IMAGENET_CLASSES = lines.toArray(new String[0]);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -162,13 +147,41 @@ public class MainActivity extends Activity implements CNNListener {
             startTime = SystemClock.uptimeMillis();
             Bitmap bitmap = BitmapFactory.decodeFile(strings[0]);
             Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 298, 218, false);
-            int bytes = scaled.getByteCount();
+            scaled.setHasAlpha(false);
+            byte[] array = getImagePixels(scaled);
+            float[][] predicted = caffeMobile.extractFeatures(array, 74, 54, "depth-refine");
+            int[] result = new int[predicted[0].length];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = ((int)(predicted[0][i]*255));
+                //result[i] = 0xff << 24 | ((int)(predicted[0][i]*255)) << 16 |  ((int)(predicted[0][i]*255)) << 8 | ((int)(predicted[0][i]*255));
+            }
+            Bitmap tatu = BitmapFactory.decodeResource(((Activity)this.listener).getResources(), R.drawable.tatu1);
+            tatu = Bitmap.createScaledBitmap(tatu, 54*2, 74*2, false);
+            return Transformer.makeTatu(tatu, result, 74, 54, 2.0f);
+            //return result;
+        }
 
-            ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
-            scaled.copyPixelsToBuffer(buffer); //Move the byte data to the buffer
+        public byte[] getImagePixels(Bitmap image) {
+            // calculate how many bytes our image consists of
+            int bytes = image.getByteCount();
 
-            byte[] array = buffer.array(); //Get the underlying array containing the data.
-            return caffeMobile.predictImage(array, 74, 54, 74*54);
+            ByteBuffer buffer = ByteBuffer.allocate(bytes); // Create a new buffer
+            image.copyPixelsToBuffer(buffer); // Move the byte data to the buffer
+
+            byte[] temp = buffer.array(); // Get the underlying array containing the data.
+
+            byte[] pixels = new byte[(temp.length / 4) * 3]; // Allocate for 3 byte BGR
+
+            // Copy pixels into place
+            for (int i = 0; i < (temp.length / 4); i++) {
+                pixels[i * 3] = temp[i * 4 + 3];     // B
+                pixels[i * 3 + 1] = temp[i * 4 + 2]; // G
+                pixels[i * 3 + 2] = temp[i * 4 + 1]; // R
+
+                // Alpha is discarded
+            }
+
+            return pixels;
         }
 
         @Override
@@ -185,6 +198,7 @@ public class MainActivity extends Activity implements CNNListener {
         Bitmap bitmap = Bitmap.createBitmap(result, 74, 54, Bitmap.Config.ARGB_8888);
         ivCaptured.setScaleType(ImageView.ScaleType.FIT_CENTER);
         ivCaptured.setImageBitmap(bitmap);
+
         //tvLabel.setText(IMAGENET_CLASSES[result]);
         btnCamera.setEnabled(true);
         btnSelect.setEnabled(true);
