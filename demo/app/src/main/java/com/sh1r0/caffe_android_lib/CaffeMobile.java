@@ -24,6 +24,8 @@ public class CaffeMobile {
 
     public native float[][] extractFeatures(byte[] buf, int width, int height, String blobNames);
 
+    public native float[][] extractFeatures(String imgPath, String blobNames);
+
     public void setMean(float[] meanValues) {
         setMeanWithMeanValues(meanValues);
     }

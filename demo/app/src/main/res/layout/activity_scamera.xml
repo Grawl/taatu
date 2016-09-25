@@ -16,13 +16,11 @@
     >
 
 <FrameLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
-    android:layout_marginBottom="1776px"
-    android:layout_marginRight="1080px"
-    android:id="@+id/button2" />
+    android:id="@+id/scamera_frame" />
 </RelativeLayout>
 
 

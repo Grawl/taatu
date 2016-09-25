@@ -102,7 +102,7 @@ public class MainActivity extends Activity implements CNNListener {
         caffeMobile.setMean(meanValues);
         Bitmap tatu = BitmapFactory.decodeResource(this.getResources(), R.drawable.tatu3);
         tatu = Bitmap.createScaledBitmap(tatu, 74*5, 54*5, false);
-        ivCaptured.setImageBitmap(tatu);
+        //ivCaptured.setImageBitmap(tatu);
     }
 
     @Override
