@@ -111,13 +111,13 @@ public class Transformer {
             if (j * heightCoeff >= tatu.getHeight()) {
                 break;
             }
-            heightCoeff = processRow(depthMap, depthMapHeight, depthMapWidth, heightCoeff, i_n, j,
-                    tatu, transformedTatu, );
+            //heightCoeff = processRow(depthMap, depthMapHeight, depthMapWidth, heightCoeff, i_n, j,
+            //        tatu, transformedTatu, );
 
         }
         heightCoeff = coeff;
         for (int j = j_n - 1; j >= 0; j--) {
-            heightCoeff = processRow(depthMap, depthMapHeight, depthMapWidth, heightCoeff, i_n, j, tatu, transformedTatu);
+            //heightCoeff = processRow(depthMap, depthMapHeight, depthMapWidth, heightCoeff, i_n, j, tatu, transformedTatu);
         }
         return transformedTatu;
         //Bitmap result = Bitmap.createBitmap(transformedTatu, depthMapWidth, depthMapHeight, Bitmap.Config.ARGB_8888);

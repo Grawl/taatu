@@ -2,14 +2,16 @@ package com.sh1r0.caffe_android_demo;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 public class PTransformer {
 
-        static int[] getPixelsFromBitmap(Bitmap tatu, int x, int y, int width, int height) {
+    static int[] getPixelsFromBitmap(Bitmap tatu, int x, int y, int width, int height) {
         int[] allPixels = new int[tatu.getWidth()*tatu.getHeight()];
         try {
             if (x + width >= tatu.getWidth()) {
@@ -24,61 +26,116 @@ public class PTransformer {
             return new int[]{};
         }
         int[] pixels = new int[width * height];
+        int pixelsIndex = 0;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                pixels[i*height + j] = allPixels[i*tatu.getWidth() + j];
+                pixels[pixelsIndex] = allPixels[i + j * tatu.getWidth()];
+                pixelsIndex++;
             }
         }
         return pixels;
     }
 
+    public static Bitmap makeTatu(Bitmap tatu, int[] depthMap, int depthMapHeight, int depthMapWidth) {
+        int[][] intermediateResult = new int[tatu.getHeight()][];
+        int ratio = tatu.getHeight()/depthMapHeight;
+        for (int i = 0; i < tatu.getHeight(); i++) {
+            int[] row = getPixelsFromBitmap(tatu, 0, i, tatu.getWidth(), 1);
+            int[] depthRow = getRowFromDepthMap(depthMap, depthMapWidth, i / ratio, tatu.getWidth());
+            int[] processedRow = processRow(row, depthRow);
+            intermediateResult[i] = processedRow;
+        }
+        /*
+        int[][] finalResult = new int[tatu.getWidth()][];
+        for (int j = 0; j < tatu.getWidth(); j++) {
+            int[] col = getPixelsFromBitmap(tatu, j, 0, tatu.getHeight(), 1);
+            int[] depthCol = getColFromDepthMap(depthMap, depthMapWidth, depthMapHeight, j / ratio, tatu.getWidth());
+            int[] processedCol = processRow(col, depthCol);
+            finalResult[j] = processedCol;
+        }*/
+        int[][] finalResult = intermediateResult;
+        int[] buffer = new int[tatu.getHeight() * tatu.getWidth()];
+        int bufIndex = 0;
+        int sum = 0;
+        for (int i = 0; i < finalResult.length; i++) {
+            for (int j = 0; j < finalResult[i].length; j++) {
+                buffer[bufIndex] = finalResult[i][j];
+                bufIndex++;
+                if (buffer[bufIndex - 1] != 0)
+                    sum++;
+            }
+        }
+        Bitmap transformedTatu = Bitmap.createBitmap(tatu.getWidth(), tatu.getHeight(), Bitmap.Config.ARGB_8888);
+        // vector is your int[] of ARGB
+        transformedTatu.copyPixelsFromBuffer(IntBuffer.wrap(buffer));
+        return transformedTatu;
+    }
 
-    public static void processRow(int[]pixelsRow, int[] depth  ) {
+    static int[] getColFromDepthMap(int[] depthMap, int depthMapWidth, int depthMapHeight, int colNumber, int tatuHeight) {
+        int[] row = new int[tatuHeight];
+        int ratio = tatuHeight/depthMapHeight;
+        int rowIndex = 0;
+        for (int i = colNumber; i < colNumber * depthMapWidth; i+=depthMapWidth) {
+            for (int j = 0; j < ratio; j++) {
+                row[rowIndex] = depthMap[i];
+            }
+        }
+        return row;
+    }
 
+    static int[] getRowFromDepthMap(int[] depthMap, int depthMapWidth, int rowNumber, int tatuWidth) {
+        int[] row = new int[tatuWidth];
+        int ratio = tatuWidth/depthMapWidth;
+        int rowIndex = 0;
+        for (int i = rowNumber * depthMapWidth; i < (rowNumber + 1) * depthMapWidth; i++) {
+            for (int j = 0; j < ratio; j++) {
+                row[rowIndex] = depthMap[i];
+                rowIndex++;
+            }
+        }
+        return row;
+    }
+
+    public static int[] processRow(int[]pixelsRow, int[] depth  ) {
         int[]pixelsRes = new int[pixelsRow.length];
-
         List<Integer> directions = new ArrayList<Integer>();
         directions.add(1);
-        directions.add(-1);
+        directions.add(-1);        // Р—Р°РґР°С‘Рј РґРІР° РЅР°РїСЂР°РІР»РµРЅРёСЏ Рё Р±РµРіР°РµРј РїРѕ РЅРёРј, Р·Р° РёСЃРєР»СЋС‡РµРЅРёРµРј РїРѕСЃР»РµРґРЅРёС… РїРёРєСЃРµР»РµР№ (С‡С‚РѕР±С‹ РЅРµ РІС‹РІР°Р»РёС‚СЊСЃСЏ)
 
-        // Задаём два направления и бегаем по ним, за исключением последних пикселей (чтобы не вывалиться)
+        /*depth = new int[depth.length];
+        for (int i = 0; i < depth.length; i++) {
+            if (i > depth.length/2)
+                depth[i] = (i - depth.length/2) * 3;
+        }
+        */
         for (int direction : directions) {
-            //Индекс, бегающий по исходному изображению
-            int pointer = pixelsRow.length/2;
-
-            //Индекс, набранный суммированием исходных пикселей с весом 1
+            //РРЅРґРµРєСЃ, Р±РµРіР°СЋС‰РёР№ РїРѕ РёСЃС…РѕРґРЅРѕРјСѓ РёР·РѕР±СЂР°Р¶РµРЅРёСЋ
+            int pointer = pixelsRow.length/2;            //РРЅРґРµРєСЃ, РЅР°Р±СЂР°РЅРЅС‹Р№ СЃСѓРјРјРёСЂРѕРІР°РЅРёРµРј РёСЃС…РѕРґРЅС‹С… РїРёРєСЃРµР»РµР№ СЃ РІРµСЃРѕРј 1
             double current = 0;
-
-            for(int i = pixelsRow.length/2; i > 1 || i < pixelsRow.length - 1; i = i + direction){
-
-                List<Integer> pixelsToTransform = new ArrayList<Integer>();
-
-                //Считаем гипотенузу - столько, сколько нужно исходных пикселей на один пиксель результата
+            for(int i = pixelsRow.length/2; i > 1 && i < pixelsRow.length - 1; i = i + direction){
+                List<Integer> pixelsToTransform = new ArrayList<Integer>();                //РЎС‡РёС‚Р°РµРј РіРёРїРѕС‚РµРЅСѓР·Сѓ - СЃС‚РѕР»СЊРєРѕ, СЃРєРѕР»СЊРєРѕ РЅСѓР¶РЅРѕ РёСЃС…РѕРґРЅС‹С… РїРёРєСЃРµР»РµР№ РЅР° РѕРґРёРЅ РїРёРєСЃРµР»СЊ СЂРµР·СѓР»СЊС‚Р°С‚Р°
                 double heightDiff = Math.abs(depth[i] - depth[i + direction]);
-                double required = Math.sqrt( Math.pow(heightDiff, 2.0) + 1);
-
-                //Добавляем пиксели, пока их суммарная еденичная длина не перекроет необходимую
-                while (current < required){
-
-                    //Проверка, что не дошли до края, если дошли - мержим, что набрали
-                    if (direction == -1 && pointer > 0)
-                        pixelsRes[i] = transformPixels(pixelsToTransform);
-
-                    if (direction == 1 && pointer < pixelsRow.length)
-                        pixelsRes[i] = transformPixels(pixelsToTransform);
-
+                double required = Math.sqrt( Math.pow(heightDiff, 2.0) + 1);                //Р”РѕР±Р°РІР»СЏРµРј РїРёРєСЃРµР»Рё, РїРѕРєР° РёС… СЃСѓРјРјР°СЂРЅР°СЏ РµРґРµРЅРёС‡РЅР°СЏ РґР»РёРЅР° РЅРµ РїРµСЂРµРєСЂРѕРµС‚ РЅРµРѕР±С…РѕРґРёРјСѓСЋ
+                while (current < required){                    //РџСЂРѕРІРµСЂРєР°, С‡С‚Рѕ РЅРµ РґРѕС€Р»Рё РґРѕ РєСЂР°СЏ, РµСЃР»Рё РґРѕС€Р»Рё - РјРµСЂР¶РёРј, С‡С‚Рѕ РЅР°Р±СЂР°Р»Рё
+                    if (direction == -1 && pointer == 0) {
+                        break;
+                    }
+                    if (direction == 1 && pointer == pixelsRow.length - 1) {
+                        break;
+                    }
                     pixelsToTransform.add(pixelsRow[pointer]);
                     current += 1;
                     pointer += direction;
-                }
+                }                //РњРµСЂР¶РёРј РїРёРєСЃРµР»Рё РІ РёСЃРєРѕРјС‹Р№, РІС‹С‡РёС‚Р°РµРј РїРѕР»СѓС‡РµРЅРЅСѓСЋ СЃСѓРјРјСѓ.
+                    if (pixelsToTransform.size() > 0)
+                        pixelsRes[i] = transformPixels(pixelsToTransform);
 
-                //Мержим пиксели в искомый, вычитаем полученную сумму.
-                pixelsRes[i] = transformPixels(pixelsToTransform);
                 current -= required;
+
             }
+
         }
-
-
+        return pixelsRes;
     }
 
     public static int transformPixels(List<Integer> pixels) {
@@ -96,6 +153,6 @@ public class PTransformer {
             b_m += b;
             a_m += a;
         }
-        return Color.argb(a_m/pixels.length, r_m/pixels.length, g_m/pixels.length, b_m/pixels.length);
+        return Color.argb(a_m/pixels.size(), r_m/pixels.size(), g_m/pixels.size(), b_m/pixels.size());
     }
 }

@@ -91,7 +91,9 @@ public class MainActivity extends Activity implements CNNListener {
         caffeMobile.loadModel(modelProto, modelBinary);
         float[] meanValues = {127, 127, 127};
         caffeMobile.setMean(meanValues);
-
+        Bitmap tatu = BitmapFactory.decodeResource(this.getResources(), R.drawable.tatu3);
+        tatu = Bitmap.createScaledBitmap(tatu, 74*5, 54*5, false);
+        ivCaptured.setImageBitmap(tatu);
     }
 
     @Override
@@ -134,7 +136,7 @@ public class MainActivity extends Activity implements CNNListener {
         tvLabel.setText("");
     }
 
-    private class CNNTask extends AsyncTask<String, Void, int[]> {
+    private class CNNTask extends AsyncTask<String, Void, Bitmap> {
         private CNNListener listener;
         private long startTime;
 
@@ -143,7 +145,7 @@ public class MainActivity extends Activity implements CNNListener {
         }
 
         @Override
-        protected int[] doInBackground(String... strings) {
+        protected Bitmap doInBackground(String... strings) {
             startTime = SystemClock.uptimeMillis();
             Bitmap bitmap = BitmapFactory.decodeFile(strings[0]);
             Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 298, 218, false);
@@ -151,13 +153,23 @@ public class MainActivity extends Activity implements CNNListener {
             byte[] array = getImagePixels(scaled);
             float[][] predicted = caffeMobile.extractFeatures(array, 74, 54, "depth-refine");
             int[] result = new int[predicted[0].length];
+
             for (int i = 0; i < result.length; i++) {
                 result[i] = ((int)(predicted[0][i]*255));
+                //result[i] = i;
                 //result[i] = 0xff << 24 | ((int)(predicted[0][i]*255)) << 16 |  ((int)(predicted[0][i]*255)) << 8 | ((int)(predicted[0][i]*255));
             }
-            Bitmap tatu = BitmapFactory.decodeResource(((Activity)this.listener).getResources(), R.drawable.tatu1);
-            tatu = Bitmap.createScaledBitmap(tatu, 54*2, 74*2, false);
-            return Transformer.makeTatu(tatu, result, 74, 54, 2.0f);
+
+            /*
+            for (int i = 0; i < result.length; i++) {
+                result[i] *= 3;
+                int index = i % 74;
+                //if (index > 37)
+                    //result[i] = 37;
+            }*/
+            Bitmap tatu = BitmapFactory.decodeResource(((Activity)this.listener).getResources(), R.drawable.tatu3);
+            tatu = Bitmap.createScaledBitmap(tatu, 74*5, 54*5, false);
+            return PTransformer.makeTatu(tatu, result, 54, 74);
             //return result;
         }
 
@@ -185,7 +197,7 @@ public class MainActivity extends Activity implements CNNListener {
         }
 
         @Override
-        protected void onPostExecute(int[] result) {
+        protected void onPostExecute(Bitmap result) {
             Log.i(LOG_TAG, String.format("elapsed wall time: %d ms", SystemClock.uptimeMillis() - startTime));
             listener.onTaskCompleted(result);
             super.onPostExecute(result);
@@ -193,11 +205,11 @@ public class MainActivity extends Activity implements CNNListener {
     }
 
     @Override
-    public void onTaskCompleted(int[] result) {
+    public void onTaskCompleted(Bitmap result) {
         //ivCaptured.setImageBitmap(bmp);
-        Bitmap bitmap = Bitmap.createBitmap(result, 74, 54, Bitmap.Config.ARGB_8888);
+        //Bitmap bitmap = Bitmap.createBitmap(result, 74, 54, Bitmap.Config.ARGB_8888);
         ivCaptured.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        ivCaptured.setImageBitmap(bitmap);
+        ivCaptured.setImageBitmap(result);
 
         //tvLabel.setText(IMAGENET_CLASSES[result]);
         btnCamera.setEnabled(true);
