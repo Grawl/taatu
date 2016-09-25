@@ -1,6 +1,8 @@
 package com.sh1r0.caffe_android_demo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -35,6 +37,7 @@ import android.view.WindowManager;
 
 import com.sh1r0.caffe_android_lib.CameraPreview;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -49,6 +52,23 @@ public class SCamera extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Get the picture selected
+        Bundle b = getIntent().getExtras();
+        String photoName = ""; // or other values
+        if(b != null)
+            photoName = b.getString("key");
+        else {
+            // Something went wrong
+        }
+
+
+        //Bitmap bmp= BitmapFactory.decodeResource(context.getResources(),
+        //        R.drawable.t01_cuervo);
+        //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        //byte[] byteArray = stream.toByteArray();
+
 
         // Hide the window title.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -254,6 +274,7 @@ class Preview2 extends ViewGroup implements SurfaceHolder.Callback, Camera.Previ
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         System.out.println("TODO");
+
         //transforms NV21 pixel data into RGB pixels
         //decodeYUV420SP(pixels, data, previewSize.width,  previewSize.height);
         //Outuput the value of the top left pixel in the preview to LogCat
