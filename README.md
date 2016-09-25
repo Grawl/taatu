@@ -1,8 +1,5 @@
 # taatu
-Hackathon AR project
 
-Here's the Caffe Android Demo to follow directions to push to caffe files to device.
+> [DV Hackathon](http://dvhack.ru) AR project to preview tattoo on a skin
 
-https://github.com/sh1r0/caffe-android-demo
-
-
+Prototype: http://adobe.ly/2d655DL
