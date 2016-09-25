@@ -58,15 +58,24 @@ public class MainActivity extends Activity implements CNNListener {
         System.loadLibrary("caffe_jni");
     }
 
+    public void openSurfaceCamera(View view) {
+        Intent intent = new Intent(this, SCamera.class);
+        startActivity(intent);
+    }
+
+    public void openTattoos(View view) {
+        Intent intent = new Intent(this, Tatoos.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ivCaptured = (ImageView) findViewById(R.id.ivCaptured);
-        tvLabel = (TextView) findViewById(R.id.tvLabel);
+       
 
-        btnCamera = (Button) findViewById(R.id.btnCamera);
+        /*btnCamera = (Button) findViewById(R.id.btnCamera);
         btnCamera.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 initPrediction();
@@ -84,7 +93,7 @@ public class MainActivity extends Activity implements CNNListener {
                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, REQUEST_IMAGE_SELECT);
             }
-        });
+        });*/
 
         // TODO: implement a splash screen(?
         caffeMobile = new CaffeMobile();

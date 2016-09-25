@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/home/miguel/taatu/demo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="/home/miguel/taatu/demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-22.2.1_2fecd32bea4111ba6e440fbcaf364efc2ef9ba8b/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/miguel/taatu/demo/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="77acdc94e87fb40ebd0243a25699e485aadaca54">
+        <dex dex="/home/miguel/taatu/demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_d2d3573b44ac695987e9812761b006de69e8fa3c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/miguel/taatu/demo/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="10029b91f27fe36529803dbf8c960bf76fe19911">
+        <dex dex="/home/miguel/taatu/demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_27fbce0aeb30aa69734ead695e1068df49a48c80/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/miguel/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.1/support-annotations-22.2.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
+        <dex dex="/home/miguel/taatu/demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-22.2.1_5c7347dce455dbf894832a23f4649c95cf87e44e/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/miguel/taatu/demo/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="/home/miguel/taatu/demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-22.2.1_fdd50289cba49c1e72d13f394cf60fc267d9e26e/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/miguel/taatu/demo/app/build/intermediates/exploded-aar/com.android.support/design/22.2.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="1821601ddbec5ff125653097812823388700af74">
+        <dex dex="/home/miguel/taatu/demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-design-22.2.1_b5fe170f8538d4610d87524b5d2299307080d2be/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/miguel/taatu/demo/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="/home/miguel/taatu/demo/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-22.2.1_fb5b89dc7bb835c243da6fbc7376c58023be1d89/classes.dex" />
+    </item>
+
+</items>
